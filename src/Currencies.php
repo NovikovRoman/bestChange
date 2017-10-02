@@ -14,7 +14,7 @@ class Currencies
             $data = explode(';', $row);
             $this->data[$data[0]] = $data[2];
         }
-        ksort($this->data);
+        asort($this->data, SORT_STRING);
     }
 
     public function get()
