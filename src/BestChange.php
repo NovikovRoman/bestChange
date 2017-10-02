@@ -35,10 +35,18 @@ class BestChange
      */
     private $rates;
 
-    public function __construct()
+    private $useCache;
+
+    public function __construct($cachePath = '')
     {
         $this->zip = new \ZipArchive();
-        $this->tmpName = tempnam(sys_get_temp_dir(), self::PREFIX_TMPFILE);
+        if ($cachePath) {
+            $this->useCache = true;
+            $this->tmpName = $cachePath;
+        } else {
+            $this->useCache = false;
+            $this->tmpName = tempnam(sys_get_temp_dir(), self::PREFIX_TMPFILE);
+        }
         register_shutdown_function([$this, 'close']); // уборка мусора
         $this->load();
     }
@@ -99,7 +107,9 @@ class BestChange
      */
     public function close()
     {
-        unlink($this->tmpName);
+        if (!$this->useCache) {
+            unlink($this->tmpName);
+        }
     }
 
     private function load()
@@ -113,6 +123,9 @@ class BestChange
 
     private function getFile()
     {
+        if ($this->useCache && file_exists($this->tmpName)) {
+            return $this;
+        }
         $file = file_get_contents(self::BESTCHANGE_FILE);
         if ($file) {
             $fp = fopen($this->tmpName, 'wb+');
