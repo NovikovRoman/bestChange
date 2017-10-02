@@ -51,7 +51,7 @@ class Rates
         foreach ($data as $item) {
             $aboveOne += (int)($item['rate'] > 1);
         }
-        if (count($data) / $aboveOne < 2) {
+        if ($aboveOne && count($data) / $aboveOne < 2) {
             uasort($data, [$this, 'sortRateAsc']);
         }
         return $data;
