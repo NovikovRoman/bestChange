@@ -11,17 +11,22 @@ class BestChangeTest extends TestCase
 
     public function testInfo()
     {
-        $bc = new BestChange($this->cachePath);
+        // не очищаем fixture
+        $bc = new BestChange($this->cachePath, 1e8);
         $this->assertEquals($bc->getVersion(), '2.01');
-        $this->assertEquals($bc->getLastUpdate(), new \DateTime('2017-10-02 22:01:43'));
+        $this->assertEquals($bc->getLastUpdate(), new \DateTime('2017-10-02 23:35:30'));
     }
 
     public function testCreateCache()
     {
-        $cachePath = __DIR__ . '/testZip';
-        $bc = new BestChange($cachePath);
+        $cachePath = __DIR__ . '/Fixtures/testZip';
+        $bc = new BestChange($cachePath, 5);
         $this->assertFileExists($cachePath);
         $this->assertFileIsReadable($cachePath);
+        $lastUpdate = $bc->getLastUpdate()->getTimestamp();
+        sleep(10);
+        $bc = new BestChange($cachePath, 5);
+        $this->assertNotEquals($bc->getLastUpdate()->getTimestamp(), $lastUpdate);
         unlink($cachePath);
     }
 }

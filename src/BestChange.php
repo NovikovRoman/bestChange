@@ -36,11 +36,13 @@ class BestChange
     private $rates;
 
     private $useCache;
+    private $cacheTime;
 
-    public function __construct($cachePath = '')
+    public function __construct($cachePath = '', $cacheTime = 3600)
     {
         $this->zip = new \ZipArchive();
         if ($cachePath) {
+            $this->cacheTime = $cacheTime;
             $this->useCache = true;
             $this->tmpName = $cachePath;
         } else {
@@ -123,7 +125,7 @@ class BestChange
 
     private function getFile()
     {
-        if ($this->useCache && file_exists($this->tmpName)) {
+        if ($this->useCacheFile()) {
             return $this;
         }
         $file = file_get_contents(self::BESTCHANGE_FILE);
@@ -134,6 +136,16 @@ class BestChange
             return $this;
         }
         throw new \Exception('Файл на bestchange.ru не найден');
+    }
+
+    private function useCacheFile()
+    {
+        clearstatcache(true, $this->tmpName);
+        return (
+            $this->useCache
+            && file_exists($this->tmpName)
+            && filemtime($this->tmpName) > (time() - $this->cacheTime)
+        );
     }
 
     private function unzip()
