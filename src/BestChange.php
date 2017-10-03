@@ -98,12 +98,6 @@ class BestChange
         return $this->rates->filter($currencyGiveID, $currencyReceiveID);
     }
 
-    public function getECurrencyCodes()
-    {
-        $ecc = new ECurrencyCodes();
-        return $ecc->get();
-    }
-
     /**
      * Завершаем работу. Убираем мусор
      */

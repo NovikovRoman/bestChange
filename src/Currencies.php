@@ -12,9 +12,22 @@ class Currencies
         foreach ($data as $row) {
             $row = iconv('CP1251', 'UTF-8', $row);
             $data = explode(';', $row);
-            $this->data[$data[0]] = $data[2];
+            $this->data[$data[0]] = [
+                'id' => $data[0],
+                'name' => $data[2],
+            ];
         }
-        asort($this->data, SORT_STRING);
+        uasort($this->data, function ($a, $b) {
+            return strcmp(
+                mb_strtolower($a['name'], 'UTF-8'),
+                mb_strtolower($b['name'], 'UTF-8')
+            );
+        });
+        $ecc = new ECurrencyCodes();
+        foreach ($this->data as $id => &$item) {
+            $res = $ecc->getByID($id);
+            $item['code'] = $res['code'];
+        }
     }
 
     public function get()
@@ -22,14 +35,8 @@ class Currencies
         return $this->data;
     }
 
-    public function getByID($id, $asArray = false)
+    public function getByID($id)
     {
-        if ($asArray) {
-            return empty($this->data[$id]) ? [] : [
-                'id' => $id,
-                'name' => $this->data[$id],
-            ];
-        }
-        return $this->data[$id];
+        return empty($this->data[$id]) ? false : $this->data[$id];
     }
 }

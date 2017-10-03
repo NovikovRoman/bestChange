@@ -31,10 +31,13 @@ class CurrenciesTest extends TestCase
     public function testGetById()
     {
         $currency = $this->currencies->getByID(107);
-        $this->assertEquals($currency, 'Золотая Корона RUB');
+        $this->assertEquals($currency['name'], 'Золотая Корона RUB');
+        $this->assertEquals($currency['id'], 107);
+        $this->assertEquals($currency['code'], 'GCMTRUB');
 
-        $currency = $this->currencies->getByID(124, true);
+        $currency = $this->currencies->getByID(124);
         $this->assertEquals($currency['id'], 124);
         $this->assertEquals($currency['name'], 'Payza EUR');
+        $this->assertEquals($currency['code'], 'PAEUR');
     }
 }
