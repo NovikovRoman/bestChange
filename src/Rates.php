@@ -29,7 +29,7 @@ class Rates
                 'reserve' => $data[5],
             ];
         }
-        $this->sortRateDescAll();
+        $this->sortRateAscAll();
     }
 
     public function get()
@@ -40,21 +40,9 @@ class Rates
     public function filter($currencyReceiveID = 0, $currencyGiveID = 0)
     {
         if ($currencyReceiveID && $currencyGiveID) {
-            return $this->sort($this->data[$currencyReceiveID][$currencyGiveID]);
+            return $this->data[$currencyReceiveID][$currencyGiveID];
         }
         return $this->get();
-    }
-
-    private function sort($data)
-    {
-        $aboveOne = 0;
-        foreach ($data as $item) {
-            $aboveOne += (int)($item['rate'] > 1);
-        }
-        if ($aboveOne && count($data) / $aboveOne < 2) {
-            uasort($data, [$this, 'sortRateAsc']);
-        }
-        return $data;
     }
 
     private function sortRateAsc($a, $b)
@@ -79,29 +67,4 @@ class Rates
         }
         return $this;
     }
-
-    private function sortRateDesc($a, $b)
-    {
-        if ($a['rate'] == $b['rate']) {
-            return 0;
-        }
-        return ($a['rate'] > $b['rate']) ? -1 : 1;
-    }
-
-    /**
-     * Отсортируем все по rate DESC
-     * @return $this
-     */
-    private function sortRateDescAll()
-    {
-        foreach ($this->data as $currencyReceiveID => $currencyIn) {
-            foreach ($currencyIn as $currencyGiveID => $item) {
-                uasort($item, [$this, 'sortRateDesc']);
-                $this->data[$currencyReceiveID][$currencyGiveID] = $item;
-            }
-        }
-        return $this;
-    }
-
-
 }
