@@ -17,6 +17,8 @@ class BestChange
     const FILE_EXCHANGERS = 'bm_exch.dat';
     const FILE_RATES = 'bm_rates.dat';
 
+    const TIMEOUT = 5;
+
     private $tmpName;
     /**
      * @var \ZipArchive
@@ -122,14 +124,14 @@ class BestChange
         if ($this->useCacheFile()) {
             return $this;
         }
-        $file = file_get_contents(self::BESTCHANGE_FILE);
+        $file = $this->loadFile(self::BESTCHANGE_FILE);
         if ($file) {
             $fp = fopen($this->tmpName, 'wb+');
             fputs($fp, $file);
             fclose($fp);
             return $this;
         }
-        throw new \Exception('Файл на bestchange.ru не найден');
+        throw new \Exception('Файл на bestchange.ru не найден или недоступен');
     }
 
     private function useCacheFile()
@@ -191,5 +193,19 @@ class BestChange
             $date = preg_replace('/' . $ru . '/sui', $en, $date);
         }
         return new \DateTime($date);
+    }
+
+    private function loadFile($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
 }
