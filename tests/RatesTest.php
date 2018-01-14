@@ -45,9 +45,9 @@ class RatesTest extends TestCase
 
         $rates = $this->rates->filter(1, 91);
         $this->assertEquals(count($rates), 4);
-        $lastRateReceiver = 0;
+        $lastRateReceiver = 1e6;
         foreach ($rates as $rate) {
-            $this->assertGreaterThan($lastRateReceiver, $rate['rate_receiver']);
+            $this->assertLessThan($lastRateReceiver, $rate['rate_receiver']);
             $lastRateReceiver = $rate['rate_receiver'];
             $this->assertEquals($rate['rate_give'], 1);
         }
