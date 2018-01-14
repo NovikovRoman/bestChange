@@ -14,7 +14,9 @@ class BestChangeTest extends TestCase
         // не очищаем fixture
         $bc = new BestChange($this->cachePath, 1e8);
         $this->assertEquals($bc->getVersion(), '2.01');
-        $this->assertEquals($bc->getLastUpdate(), new \DateTime('2017-10-02 23:35:30'));
+        // в bm_info.dat год не указывается. Предполагается текущий. Для тестов лежит файл 2017 года
+        $currentYear = date('Y');
+        $this->assertEquals($bc->getLastUpdate(), new \DateTime($currentYear . '-10-02 23:35:30'));
     }
 
     public function testCreateCache()
