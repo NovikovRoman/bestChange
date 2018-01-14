@@ -164,6 +164,7 @@ class ECurrencyCodes
             141 => ['code' => 'CASHEUR'],
             92 => ['code' => 'CASHUAH'],
             94 => ['code' => 'CASHKZT'],
+            175 => ['code' => 'EPMUSD'],
         ];
         return $this;
     }
