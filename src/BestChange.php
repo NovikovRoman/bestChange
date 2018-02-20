@@ -105,7 +105,7 @@ class BestChange
      */
     public function close()
     {
-        if (!$this->useCache) {
+        if ($this->useCache) {
             unlink($this->tmpName);
         }
     }
