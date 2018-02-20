@@ -106,8 +106,12 @@ class BestChange
     public function close()
     {
         if (!$this->useCache) {
+            if (!is_writable($this->tmpName)) {
+                chmod($this->tmpName, 0644);
+            }
             unlink($this->tmpName);
         }
+        return $this;
     }
 
     private function load()
