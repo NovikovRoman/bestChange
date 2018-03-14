@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "664ca98a63262bee46f0b496dca39045",
+    "content-hash": "a7cbe1319b4702792bd27750c9feae57",
     "packages": [
         {
             "name": "imangazaliev/didom",
@@ -1517,6 +1517,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^7.0"
+    },
     "platform-dev": []
 }

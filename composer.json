@@ -10,6 +10,7 @@
   ],
   "minimum-stability": "stable",
   "require": {
+    "php": "^7.0",
     "imangazaliev/didom": "^1.13"
   },
   "autoload": {
