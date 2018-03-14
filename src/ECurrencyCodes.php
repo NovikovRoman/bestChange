@@ -165,6 +165,16 @@ class ECurrencyCodes
             92 => ['code' => 'CASHUAH'],
             94 => ['code' => 'CASHKZT'],
             175 => ['code' => 'EPMUSD'],
+            176 => ['code' => 'WEXBTC'],
+            184 => ['code' => 'BTG'],
+            185 => ['code' => 'TRX'],
+            183 => ['code' => 'BCN'],
+            181 => ['code' => 'ADA'],
+            182 => ['code' => 'XLM'],
+            178 => ['code' => 'EOS'],
+            179 => ['code' => 'IOTA'],
+            180 => ['code' => 'LSK'],
+            177 => ['code' => 'NEO'],
         ];
         return $this;
     }
