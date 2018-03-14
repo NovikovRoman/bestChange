@@ -9,7 +9,9 @@
     }
   ],
   "minimum-stability": "stable",
-  "require": {},
+  "require": {
+    "imangazaliev/didom": "^1.13"
+  },
   "autoload": {
     "psr-4": {
       "BestChange\\": "src/"

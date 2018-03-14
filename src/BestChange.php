@@ -5,9 +5,7 @@ namespace BestChange;
 class BestChange
 {
     private $version = '';
-    /**
-     * @var \DateTime
-     */
+    /** @var \DateTime */
     private $lastUpdate;
 
     const PREFIX_TMPFILE = 'nbc';
@@ -19,37 +17,35 @@ class BestChange
 
     const TIMEOUT = 5;
 
-    private $tmpName;
-    /**
-     * @var \ZipArchive
-     */
+    /** @var \ZipArchive */
     private $zip;
-    /**
-     * @var Currencies
-     */
+    /** @var Currencies */
     private $currencies;
-    /**
-     * @var Exchangers
-     */
+    /** @var Exchangers */
     private $exchangers;
-    /**
-     * @var Rates
-     */
+    /** @var Rates */
     private $rates;
 
+    private $cachePath;
     private $useCache;
     private $cacheTime;
 
+    /**
+     * BestChange constructor.
+     * @param string $cachePath
+     * @param int $cacheTime
+     * @throws \Exception
+     */
     public function __construct($cachePath = '', $cacheTime = 3600)
     {
         $this->zip = new \ZipArchive();
         if ($cachePath) {
             $this->cacheTime = $cacheTime;
             $this->useCache = true;
-            $this->tmpName = $cachePath;
+            $this->cachePath = $cachePath;
         } else {
             $this->useCache = false;
-            $this->tmpName = tempnam(sys_get_temp_dir(), self::PREFIX_TMPFILE);
+            $this->cachePath = tempnam(sys_get_temp_dir(), self::PREFIX_TMPFILE);
         }
         register_shutdown_function([$this, 'close']); // уборка мусора
         $this->load();
@@ -106,14 +102,18 @@ class BestChange
     public function close()
     {
         if (!$this->useCache) {
-            if (!is_writable($this->tmpName)) {
-                chmod($this->tmpName, 0644);
+            if (!is_writable($this->cachePath)) {
+                chmod($this->cachePath, 0644);
             }
-            unlink($this->tmpName);
+            unlink($this->cachePath);
         }
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     private function load()
     {
         $this->getFile()->unzip()->init();
@@ -123,6 +123,10 @@ class BestChange
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     private function getFile()
     {
         if ($this->useCacheFile()) {
@@ -130,7 +134,7 @@ class BestChange
         }
         $file = $this->loadFile(self::BESTCHANGE_FILE);
         if ($file) {
-            $fp = fopen($this->tmpName, 'wb+');
+            $fp = fopen($this->cachePath, 'wb+');
             fputs($fp, $file);
             fclose($fp);
             return $this;
@@ -140,17 +144,21 @@ class BestChange
 
     private function useCacheFile()
     {
-        clearstatcache(true, $this->tmpName);
+        clearstatcache(true, $this->cachePath);
         return (
             $this->useCache
-            && file_exists($this->tmpName)
-            && filemtime($this->tmpName) > (time() - $this->cacheTime)
+            && file_exists($this->cachePath)
+            && filemtime($this->cachePath) > (time() - $this->cacheTime)
         );
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     private function unzip()
     {
-        if (!$this->zip->open($this->tmpName)) {
+        if (!$this->zip->open($this->cachePath)) {
             throw new \Exception('Получен битый файл с bestchange.ru');
         }
         return $this;

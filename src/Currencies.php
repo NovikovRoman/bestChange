@@ -6,6 +6,11 @@ class Currencies
 {
     private $data = [];
 
+    /**
+     * Currencies constructor.
+     * @param $data
+     * @throws \Exception
+     */
     public function __construct($data)
     {
         $data = explode("\n", $data);
@@ -13,17 +18,14 @@ class Currencies
             $row = iconv('CP1251', 'UTF-8', $row);
             $data = explode(';', $row);
             $this->data[$data[0]] = [
-                'id' => $data[0],
+                'id' => (int)$data[0],
                 'name' => $data[2],
             ];
         }
         uasort($this->data, function ($a, $b) {
-            return strcmp(
-                mb_strtolower($a['name'], 'UTF-8'),
-                mb_strtolower($b['name'], 'UTF-8')
-            );
+            return strcasecmp($a['name'], $b['name']);
         });
-        $ecc = new ECurrencyCodes();
+        $ecc = new ECurrencyCodes($this);
         foreach ($this->data as $id => &$item) {
             $res = $ecc->getByID($id);
             $item['code'] = $res['code'];

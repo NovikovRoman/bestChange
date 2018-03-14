@@ -10,6 +10,13 @@ class CurrenciesTest extends TestCase
     private $filepath = __DIR__ . '/Fixtures/info/bm_cy.dat';
     private $currencies;
 
+    /**
+     * CurrenciesTest constructor.
+     * @param null $name
+     * @param array $data
+     * @param string $dataName
+     * @throws \Exception
+     */
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         $this->currencies = new Currencies(file_get_contents($this->filepath));

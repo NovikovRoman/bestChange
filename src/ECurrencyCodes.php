@@ -2,190 +2,118 @@
 
 namespace BestChange;
 
+use DiDom\Document;
+
 /**
  * Коды взяты отсюда: https://www.bestchange.ru/wiki/rates.html
  * нет API для получения кода валют
  */
 class ECurrencyCodes
 {
+    const PAGEURL = 'https://www.bestchange.ru/wiki/rates.html';
+    const FILENAME = '/e-currency-codes';
+    const TIMEOUT = 20;
+    private $pathfile;
     private $data;
+    private $currencies;
 
-    public function __construct()
+    /**
+     * ECurrencyCodes constructor.
+     * @param Currencies $currencies
+     * @throws \Exception
+     */
+    public function __construct(Currencies $currencies)
     {
-        $this->init();
+        $this->currencies = $currencies;
+        $this->pathfile = __DIR__ . self::FILENAME;
+        if (file_exists($this->pathfile)) {
+            $this->data = json_decode(file_get_contents($this->pathfile), true);
+            return;
+        }
+        $this->refreshCurrenciesCodes();
     }
 
-    private function init()
-    {
-        $this->data = [
-            1 => ['code' => 'WMZ'],
-            2 => ['code' => 'WMR'],
-            3 => ['code' => 'WME'],
-            20 => ['code' => 'WMU'],
-            18 => ['code' => 'WMB'],
-            47 => ['code' => 'WMK'],
-            43 => ['code' => 'WMG'],
-            96 => ['code' => 'WMX'],
-            87 => ['code' => 'PMRUSD'],
-            144 => ['code' => 'PMRRUB'],
-            171 => ['code' => 'PMREUR'],
-            19 => ['code' => 'PMRUAH'],
-            6 => ['code' => 'YAMRUB'],
-            110 => ['code' => 'QWUSD'],
-            63 => ['code' => 'QWRUB'],
-            126 => ['code' => 'QWEUR'],
-            127 => ['code' => 'QWKZT'],
-            40 => ['code' => 'PMUSD'],
-            41 => ['code' => 'PMEUR'],
-            128 => ['code' => 'PMBTC'],
-            156 => ['code' => 'PMVUSD'],
-            45 => ['code' => 'PPUSD'],
-            98 => ['code' => 'PPRUB'],
-            80 => ['code' => 'PPEUR'],
-            164 => ['code' => 'PPGBP'],
-            93 => ['code' => 'BTC'],
-            172 => ['code' => 'BCH'],
-            139 => ['code' => 'ETH'],
-            160 => ['code' => 'ETC'],
-            99 => ['code' => 'LTC'],
-            161 => ['code' => 'XRP'],
-            149 => ['code' => 'XMR'],
-            115 => ['code' => 'DOGE'],
-            137 => ['code' => 'NMC'],
-            138 => ['code' => 'PPC'],
-            140 => ['code' => 'DASH'],
-            162 => ['code' => 'ZEC'],
-            163 => ['code' => 'USDT'],
-            173 => ['code' => 'XEM'],
-            174 => ['code' => 'REP'],
-            104 => ['code' => 'WEXUSD'],
-            112 => ['code' => 'WEXRUB'],
-            119 => ['code' => 'WEXEUR'],
-            170 => ['code' => 'WEXBTC'],
-            129 => ['code' => 'EXMUSD'],
-            130 => ['code' => 'EXMRUB'],
-            131 => ['code' => 'EXMEUR'],
-            169 => ['code' => 'EXMUAH'],
-            146 => ['code' => 'CRPCUSD'],
-            7 => ['code' => 'ECNEXUSD'],
-            82 => ['code' => 'LVCNUSD'],
-            148 => ['code' => 'TRDUSD'],
-            153 => ['code' => 'TRDEUR'],
-            88 => ['code' => 'ADVCUSD'],
-            121 => ['code' => 'ADVCRUB'],
-            120 => ['code' => 'ADVCEUR'],
-            142 => ['code' => 'ADVCUAH'],
-            108 => ['code' => 'PRUSD'],
-            117 => ['code' => 'PRRUB'],
-            122 => ['code' => 'PREUR'],
-            44 => ['code' => 'SKLUSD'],
-            123 => ['code' => 'SKLEUR'],
-            66 => ['code' => 'PAUSD'],
-            124 => ['code' => 'PAEUR'],
-            83 => ['code' => 'OKUSD'],
-            84 => ['code' => 'OKRUB'],
-            85 => ['code' => 'OKEUR'],
-            61 => ['code' => 'WOUSD'],
-            46 => ['code' => 'WOUAH'],
-            11 => ['code' => 'IDAMD'],
-            74 => ['code' => 'PAXUMUSD'],
-            133 => ['code' => 'PAXUMEUR'],
-            145 => ['code' => 'CPTSUSD'],
-            147 => ['code' => 'EPSUSD'],
-            134 => ['code' => 'MPLUSD'],
-            135 => ['code' => 'MPLEUR'],
-            72 => ['code' => 'NTLRUSD'],
-            136 => ['code' => 'NTLREUR'],
-            152 => ['code' => 'PSRUSD'],
-            73 => ['code' => 'PSCEUR'],
-            76 => ['code' => 'STPUSD'],
-            109 => ['code' => 'NIXUSD'],
-            125 => ['code' => 'NIXEUR'],
-            154 => ['code' => 'EPAYUSD'],
-            97 => ['code' => 'EPAYEUR'],
-            165 => ['code' => 'ALPCNY'],
-            50 => ['code' => 'LQUSD'],
-            155 => ['code' => 'EKZT'],
-            48 => ['code' => 'ZPRUB'],
-            49 => ['code' => 'MWRUB'],
-            42 => ['code' => 'SBERRUB'],
-            52 => ['code' => 'ACRUB'],
-            143 => ['code' => 'ACCUSD'],
-            62 => ['code' => 'ACCRUB'],
-            105 => ['code' => 'TCSBRUB'],
-            51 => ['code' => 'TBRUB'],
-            64 => ['code' => 'RUSSTRUB'],
-            79 => ['code' => 'AVBRUB'],
-            53 => ['code' => 'PSBRUB'],
-            95 => ['code' => 'GPBRUB'],
-            57 => ['code' => 'KUKRUB'],
-            157 => ['code' => 'RFBRUB'],
-            132 => ['code' => 'RNKBRUB'],
-            55 => ['code' => 'P24USD'],
-            56 => ['code' => 'P24UAH'],
-            158 => ['code' => 'RFBUAH'],
-            68 => ['code' => 'OSDBUAH'],
-            118 => ['code' => 'PMBBUAH'],
-            4 => ['code' => 'BLRBBYN'],
-            103 => ['code' => 'KKBKZT'],
-            90 => ['code' => 'HLKBKZT'],
-            114 => ['code' => 'SBERKZT'],
-            75 => ['code' => 'FRTBKZT'],
-            168 => ['code' => 'ATNBKZT'],
-            100 => ['code' => 'UPCNY'],
-            58 => ['code' => 'CARDUSD'],
-            59 => ['code' => 'CARDRUB'],
-            65 => ['code' => 'CARDEUR'],
-            60 => ['code' => 'CARDUAH'],
-            54 => ['code' => 'CARDBYN'],
-            111 => ['code' => 'CARDKZT'],
-            69 => ['code' => 'WIREUSD'],
-            71 => ['code' => 'WIRERUB'],
-            70 => ['code' => 'WIREEUR'],
-            102 => ['code' => 'WIREUAH'],
-            113 => ['code' => 'WIREKZT'],
-            81 => ['code' => 'WIREGBP'],
-            166 => ['code' => 'WIRECNY'],
-            167 => ['code' => 'WIRETHB'],
-            159 => ['code' => 'STLMRUB'],
-            67 => ['code' => 'WUUSD'],
-            15 => ['code' => 'WUEUR'],
-            78 => ['code' => 'MGUSD'],
-            77 => ['code' => 'MGEUR'],
-            101 => ['code' => 'CNTUSD'],
-            106 => ['code' => 'CNTRUB'],
-            116 => ['code' => 'GCMTUSD'],
-            107 => ['code' => 'GCMTRUB'],
-            86 => ['code' => 'USTMUSD'],
-            150 => ['code' => 'RMTFUSD'],
-            151 => ['code' => 'RMTFEUR'],
-            89 => ['code' => 'CASHUSD'],
-            91 => ['code' => 'CASHRUB'],
-            141 => ['code' => 'CASHEUR'],
-            92 => ['code' => 'CASHUAH'],
-            94 => ['code' => 'CASHKZT'],
-            175 => ['code' => 'EPMUSD'],
-            176 => ['code' => 'WEXBTC'],
-            184 => ['code' => 'BTG'],
-            185 => ['code' => 'TRX'],
-            183 => ['code' => 'BCN'],
-            181 => ['code' => 'ADA'],
-            182 => ['code' => 'XLM'],
-            178 => ['code' => 'EOS'],
-            179 => ['code' => 'IOTA'],
-            180 => ['code' => 'LSK'],
-            177 => ['code' => 'NEO'],
-        ];
-        return $this;
-    }
-
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \Exception
+     */
     public function getByID($id)
     {
+        if (empty($this->data[$id])) {
+            $this->refreshCurrenciesCodes();
+        }
         return $this->data[$id];
     }
 
     public function get()
     {
         return $this->data;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function refreshCurrenciesCodes()
+    {
+        $codes = $this->getCodes();
+        $currencies = $this->currencies->get();
+        foreach ($currencies as $currency) {
+            if (empty($codes[$currency['name']])) {
+                throw new \Exception('Несоответствие данных таблицы «Коды электронных валют» и bm_cy.dat');
+            }
+            $this->data[$currency['id']] = [
+                'code' => $codes[$currency['name']],
+            ];
+        }
+        file_put_contents($this->pathfile, json_encode($this->data, JSON_UNESCAPED_UNICODE));
+        return $this;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function getCodes()
+    {
+        $page = $this->getPage();
+        $doc = new Document($page);
+        if (!$doc->has('h2')) {
+            throw new \Exception('Коды электронных валют не получены. Проверьте доступность ' . self::PAGEURL);
+        }
+        foreach ($doc->find('h2') as $title) {
+            if (preg_match('/Коды\s+электронных\s+валют/sui', $title->text())) {
+                $table = $title->nextSibling('table.codetable');
+                break;
+            }
+        }
+        if (empty($table)) {
+            throw new \Exception('Коды электронных валют не получены. Проверьте наличие таблицы с кодами на странице ' . self::PAGEURL);
+        }
+        $codes = [];
+        foreach ($table->find('tr') as $row) {
+            if (!$row->has('i')) {
+                continue;
+            }
+            $cols = $row->find('td');
+            if (count($cols) != 2) {
+                throw new \Exception('Ошибка парсинга таблицы «Коды электронных валют». Таблица с кодами должна содержать 2 колонки (' . self::PAGEURL . ')');
+            }
+            $codes[trim($cols[1]->first('i')->text())] = trim($cols[0]->text());
+        }
+        return $codes;
+    }
+
+    private function getPage()
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, self::PAGEURL);
+        curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        return iconv('CP1251', 'UTF-8', $data);
     }
 }
