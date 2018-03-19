@@ -16,15 +16,15 @@ class Rates
                 continue;
             }
             $rateGive = (float)$data[3];
-            $rateReceiver = (float)$data[4];
-            if (!$rateGive || !$rateReceiver) {
+            $rateReceive = (float)$data[4];
+            if (!$rateGive || !$rateReceive) {
                 continue;
             }
-            $rate = $rateReceiver ? $rateGive / $rateReceiver : 0;
+            $rate = $rateReceive ? $rateGive / $rateReceive : 0;
             $this->data[$data[0]][$data[1]][$data[2]] = [
                 'exchanger_id' => (int)$data[2],
                 'rate_give' => $rateGive,
-                'rate_receiver' => $rateReceiver,
+                'rate_receive' => $rateReceive,
                 'rate' => $rate,
                 'reserve' => $data[5],
             ];
