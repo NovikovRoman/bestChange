@@ -2,6 +2,8 @@
 
 namespace BestChange;
 
+use BestChange\Exception\BestChangeException;
+
 class Currencies
 {
     private $data = [];
@@ -9,7 +11,7 @@ class Currencies
     /**
      * Currencies constructor.
      * @param $data
-     * @throws \Exception
+     * @throws BestChangeException
      */
     public function __construct($data)
     {

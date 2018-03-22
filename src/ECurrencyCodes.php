@@ -2,6 +2,7 @@
 
 namespace BestChange;
 
+use BestChange\Exception\ECurrencyNotReceived;
 use DiDom\Document;
 
 /**
@@ -20,7 +21,7 @@ class ECurrencyCodes
     /**
      * ECurrencyCodes constructor.
      * @param Currencies $currencies
-     * @throws \Exception
+     * @throws ECurrencyNotReceived
      */
     public function __construct(Currencies $currencies)
     {
@@ -36,7 +37,7 @@ class ECurrencyCodes
     /**
      * @param $id
      * @return mixed
-     * @throws \Exception
+     * @throws ECurrencyNotReceived
      */
     public function getByID($id)
     {
@@ -52,7 +53,7 @@ class ECurrencyCodes
     }
 
     /**
-     * @throws \Exception
+     * @throws ECurrencyNotReceived
      */
     public function refreshCurrenciesCodes()
     {
@@ -60,7 +61,7 @@ class ECurrencyCodes
         $currencies = $this->currencies->get();
         foreach ($currencies as $currency) {
             if (empty($codes[$currency['name']])) {
-                throw new \Exception('Несоответствие данных таблицы «Коды электронных валют» и bm_cy.dat');
+                throw new ECurrencyNotReceived('Несоответствие данных таблицы «Коды электронных валют» и bm_cy.dat');
             }
             $this->data[$currency['id']] = [
                 'code' => $codes[$currency['name']],
@@ -71,14 +72,14 @@ class ECurrencyCodes
     }
 
     /**
-     * @throws \Exception
+     * @throws ECurrencyNotReceived
      */
     private function getCodes()
     {
         $page = $this->getPage();
         $doc = new Document($page);
         if (!$doc->has('h2')) {
-            throw new \Exception('Коды электронных валют не получены. Проверьте доступность ' . self::PAGEURL);
+            throw new ECurrencyNotReceived('Коды электронных валют не получены. Проверьте доступность ' . self::PAGEURL);
         }
         foreach ($doc->find('h2') as $title) {
             if (preg_match('/Коды\s+электронных\s+валют/sui', $title->text())) {
@@ -87,7 +88,7 @@ class ECurrencyCodes
             }
         }
         if (empty($table)) {
-            throw new \Exception('Коды электронных валют не получены. Проверьте наличие таблицы с кодами на странице ' . self::PAGEURL);
+            throw new ECurrencyNotReceived('Коды электронных валют не получены. Проверьте наличие таблицы с кодами на странице ' . self::PAGEURL);
         }
         $codes = [];
         foreach ($table->find('tr') as $row) {
@@ -96,7 +97,7 @@ class ECurrencyCodes
             }
             $cols = $row->find('td');
             if (count($cols) != 2) {
-                throw new \Exception('Ошибка парсинга таблицы «Коды электронных валют». Таблица с кодами должна содержать 2 колонки (' . self::PAGEURL . ')');
+                throw new ECurrencyNotReceived('Ошибка парсинга таблицы «Коды электронных валют». Таблица с кодами должна содержать 2 колонки (' . self::PAGEURL . ')');
             }
             $codes[trim($cols[1]->first('i')->text())] = trim($cols[0]->text());
         }

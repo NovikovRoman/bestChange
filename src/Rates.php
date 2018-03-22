@@ -2,6 +2,8 @@
 
 namespace BestChange;
 
+use BestChange\Exception\NoExchangeException;
+
 class Rates
 {
     private $data = [];
@@ -37,12 +39,18 @@ class Rates
         return $this->data;
     }
 
+    /**
+     * @param int $currencyReceiveID
+     * @param int $currencyGiveID
+     * @return array
+     * @throws NoExchangeException
+     */
     public function filter($currencyReceiveID = 0, $currencyGiveID = 0)
     {
-        if ($currencyReceiveID && $currencyGiveID) {
-            return $this->data[$currencyReceiveID][$currencyGiveID];
+        if (empty($this->data[$currencyReceiveID][$currencyGiveID])) {
+            throw new NoExchangeException('Нет направления обмена');
         }
-        return $this->get();
+        return $this->data[$currencyReceiveID][$currencyGiveID];
     }
 
     private function sortRateAsc($a, $b)

@@ -2,6 +2,8 @@
 
 namespace BestChange;
 
+use BestChange\Exception\BestChangeException;
+
 class BestChange
 {
     private $version = '';
@@ -34,7 +36,7 @@ class BestChange
      * BestChange constructor.
      * @param string $cachePath
      * @param int $cacheTime
-     * @throws \Exception
+     * @throws BestChangeException
      */
     public function __construct($cachePath = '', $cacheTime = 3600)
     {
@@ -91,6 +93,12 @@ class BestChange
         return $this->rates->get();
     }
 
+    /**
+     * @param int $currencyGiveID
+     * @param int $currencyReceiveID
+     * @return array
+     * @throws Exception\NoExchangeException
+     */
     public function getRatesFilter($currencyGiveID = 0, $currencyReceiveID = 0)
     {
         return $this->rates->filter($currencyGiveID, $currencyReceiveID);
@@ -112,7 +120,7 @@ class BestChange
 
     /**
      * @return $this
-     * @throws \Exception
+     * @throws BestChangeException
      */
     private function load()
     {
@@ -125,7 +133,7 @@ class BestChange
 
     /**
      * @return $this
-     * @throws \Exception
+     * @throws BestChangeException
      */
     private function getFile()
     {
@@ -139,7 +147,7 @@ class BestChange
             fclose($fp);
             return $this;
         }
-        throw new \Exception('Файл на bestchange.ru не найден или недоступен');
+        throw new BestChangeException('Файл на bestchange.ru не найден или недоступен');
     }
 
     private function useCacheFile()
@@ -154,12 +162,12 @@ class BestChange
 
     /**
      * @return $this
-     * @throws \Exception
+     * @throws BestChangeException
      */
     private function unzip()
     {
         if (!$this->zip->open($this->cachePath)) {
-            throw new \Exception('Получен битый файл с bestchange.ru');
+            throw new BestChangeException('Получен битый файл с bestchange.ru');
         }
         return $this;
     }
