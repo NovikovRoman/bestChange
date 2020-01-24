@@ -1,5 +1,6 @@
 {
   "name": "noroman/bestchange",
+  "description": "bestchange.ru library",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -11,7 +12,11 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^7.0",
-    "imangazaliev/didom": "^1.13"
+    "imangazaliev/didom": "^1.13",
+    "ext-zip": "*",
+    "ext-iconv": "*",
+    "ext-curl": "*",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
