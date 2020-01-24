@@ -11,7 +11,7 @@ class BestChange
     private $lastUpdate;
 
     const PREFIX_TMPFILE = 'nbc';
-    const BESTCHANGE_FILE = 'http://www.bestchange.ru/bm/info.zip';
+    const BESTCHANGE_FILE = 'http://api.bestchange.ru/info.zip';
 
     const FILE_CURRENCIES = 'bm_cy.dat';
     const FILE_EXCHANGERS = 'bm_exch.dat';
