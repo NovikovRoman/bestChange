@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use BestChange\Currencies;
 
@@ -15,7 +16,7 @@ class CurrenciesTest extends TestCase
      * @param null $name
      * @param array $data
      * @param string $dataName
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct($name = null, array $data = [], $dataName = '')
     {

@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use DateTime;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use BestChange\BestChange;
 
@@ -11,7 +13,7 @@ class BestChangeTest extends TestCase
     private $cacheECurrencyCodes = __DIR__ . '/../src/e-currency-codes';
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testInfo()
     {
@@ -20,11 +22,11 @@ class BestChangeTest extends TestCase
         $this->assertEquals($bc->getVersion(), '2.01');
         // в bm_info.dat год не указывается. Предполагается текущий. Для тестов лежит файл 2017 года
         $currentYear = date('Y');
-        $this->assertEquals($bc->getLastUpdate(), new \DateTime($currentYear . '-10-02 23:35:30'));
+        $this->assertEquals($bc->getLastUpdate(), new DateTime($currentYear . '-10-02 23:35:30'));
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testCreateCache()
     {

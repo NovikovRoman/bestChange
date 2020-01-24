@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use BestChange\Exception\NoExchangeException;
 use PHPUnit\Framework\TestCase;
 use BestChange\Rates;
 
@@ -31,7 +32,7 @@ class RatesTest extends TestCase
      * к невыгодным. В этом случае отработала обратная сортировка по полю rate
      * Если меняем доллары США (id: 1) на рубли (id: 91), то получим список от самых выгодных курсов
      * к невыгодным. В этом случае отработала прямая сортировка по полю rate
-     * @throws \BestChange\Exception\NoExchangeException
+     * @throws NoExchangeException
      */
     public function testFilter()
     {

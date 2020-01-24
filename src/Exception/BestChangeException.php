@@ -2,6 +2,8 @@
 
 namespace BestChange\Exception;
 
-class BestChangeException extends \Exception
+use Exception;
+
+class BestChangeException extends Exception
 {
 }

@@ -3,11 +3,13 @@
 namespace BestChange;
 
 use BestChange\Exception\BestChangeException;
+use DateTime;
+use ZipArchive;
 
 class BestChange
 {
     private $version = '';
-    /** @var \DateTime */
+    /** @var DateTime */
     private $lastUpdate;
 
     const PREFIX_TMPFILE = 'nbc';
@@ -19,7 +21,7 @@ class BestChange
 
     const TIMEOUT = 5;
 
-    /** @var \ZipArchive */
+    /** @var ZipArchive */
     private $zip;
     /** @var Currencies */
     private $currencies;
@@ -40,7 +42,7 @@ class BestChange
      */
     public function __construct($cachePath = '', $cacheTime = 3600)
     {
-        $this->zip = new \ZipArchive();
+        $this->zip = new ZipArchive();
         if ($cachePath) {
             $this->cacheTime = $cacheTime;
             $this->useCache = true;
@@ -212,7 +214,7 @@ class BestChange
         foreach ($arMonth as $ru => $en) {
             $date = preg_replace('/' . $ru . '/sui', $en, $date);
         }
-        return new \DateTime($date);
+        return new DateTime($date);
     }
 
     private function loadFile($url)
